@@ -1,7 +1,9 @@
-const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require('discord.js');
-const client = require('../index').client;
+import { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, Events } from 'discord.js';
 
-client.on('modalSubmit', async (modal) => {
+const name = Events.modalSubmit;
+
+const execute = async (modal) => {
+
 	if(modal.customId.startsWith('sondageModal')) {
 		
 		const reponse1 = modal.getTextInputValue('reponse1');
@@ -31,11 +33,10 @@ client.on('modalSubmit', async (modal) => {
 						i.deferUpdate();
 						participants.push(user);
 						reponses[choix] = reponses[choix] + 1;
-						//let str = 'Vous avez voté ' + choix;
 						return await modal.editReply({ embeds: [ getEmbed(modal, participants, reponses) ], components: [ components ] });
 					} else return await i.reply({ content: 'Vous avez déjà voté !', ephemeral: true });
 				} catch(e) {
-					console.log(e);
+					console.log('erreur', e);
 					return await i.reply({ content: 'Ce sondage est terminé !', ephemeral: true });
 				}
 			}
@@ -44,10 +45,10 @@ client.on('modalSubmit', async (modal) => {
 		try {
 			await modal.reply({ embeds: [ getEmbed(modal, participants, reponses) ], components: [ components ] });
 		} catch(e) {
-			return modal.reply({ content: 'Vous ne pouvez pas mettre deux fois la même réponse.', ephemeral: true });
+			return await modal.reply({ content: 'Vous ne pouvez pas mettre deux fois la même réponse.', ephemeral: true });
 		}
 	}
-});
+}
 
 function getEmbed(modal, participants, reponses) {
 	const question = modal.getTextInputValue('question');
@@ -58,8 +59,8 @@ function getEmbed(modal, participants, reponses) {
 	
 	const name = modal.member.user.username + ' a lancé un sondage !';
 	const votes = participants.length + ' votes';
-	const embed = new MessageEmbed()
-	.setColor('RANDOM')
+	const embed = new EmbedBuilder ()
+	.setColor(Number(`0x${Math.floor(Math.random()*16777215).toString(16)}`))
 	.setTitle(question)
 	.setDescription(votes)
 	.setAuthor({ name: name, iconURL: modal.member.user.displayAvatarURL() })
@@ -90,9 +91,8 @@ function getEmbed(modal, participants, reponses) {
 
 function getComponents(modal) {
 	const id = 'select' + modal.customId
-	const row = new MessageActionRow()
-		.addComponents(
-		new MessageSelectMenu()
+	const row = new ActionRowBuilder().addComponents(
+		new StringSelectMenuBuilder()
 			.setCustomId(id)
 			.setPlaceholder('Réponse')
 			.addOptions(getOptions(modal))
@@ -106,25 +106,27 @@ function getOptions(modal) {
 	const reponse2 = modal.getTextInputValue('reponse2');
 	const reponse3 = modal.getTextInputValue('reponse3');
 	const reponse4 = modal.getTextInputValue('reponse4');
-	options.push({
-		label: reponse1,
-		value: reponse1,
-	});
-	options.push({
-		label: reponse2,
-		value: reponse2,
-	});
+	options.push(
+		new StringSelectMenuOptionBuilder()
+			.setLabel(reponse1)
+			.setValue(reponse1),
+		new StringSelectMenuOptionBuilder()
+			.setLabel(reponse2)
+			.setValue(reponse2)
+	);
 	if(reponse3 != null) {
-		options.push({
-			label: reponse3,
-			value: reponse3,
-		});
+		options.push(
+			new StringSelectMenuOptionBuilder()
+				.setLabel(reponse3)
+				.setValue(reponse3)
+		);
 	}
 	if(reponse4 != null) {
-		options.push({
-			label: reponse4,
-			value: reponse4,
-		});
+		options.push(
+			new StringSelectMenuOptionBuilder()
+				.setLabel(reponse4)
+				.setValue(reponse4)
+		);
 	}
 	return options;
 }
@@ -143,4 +145,9 @@ function getValue(participants, reponse) {
 	}
 	str += ' ' + parseInt(pourcentage, 10) + '% (' + reponse + ' votes)';
 	return str;
+}
+
+export const data = {
+    name: name,
+    execute: execute
 }

@@ -4,10 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "NODE_ENV=development node ./app/deployment/deploy-dev.js",
+    "start": "NODE_ENV=development node ./app",
+    "docker": "docker rm marsouin-bot & docker rmi marsouin-bot & docker build -t marsouin-bot . && docker run --name marsouin-bot --rm marsouin-bot"
   },
   "author": "Cendros",
   "license": "ISC",
+  "type": "module",
   "dependencies": {
     "@discordjs/builders": "^1.2.0",
     "axios": "^0.27.2",
@@ -18,7 +21,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
     "fs": "^0.0.1-security",
-    "path": "^0.12.7",
-    "request": "^2.88.2"
+    "glob": "^10.3.3",
+    "path": "^0.12.7"
   }
 }
