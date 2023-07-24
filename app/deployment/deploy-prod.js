@@ -1,7 +1,8 @@
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { getFiles } from '../utils/file.js';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config({path: `.env.${process.env.NODE_ENV}`})
 
 const commands = await getFiles(process.env.NODE_ENV == 'development' ? 'app/commands' : 'commands');
 const commandsData = [];

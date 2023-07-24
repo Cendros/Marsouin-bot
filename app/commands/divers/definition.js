@@ -1,7 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { get } from 'axios';
 import { load } from 'cheerio';
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import pkg from 'axios';
+const { get } = pkg;
 
 const category = 'Divers';
 const command = new SlashCommandBuilder()

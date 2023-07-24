@@ -3,7 +3,8 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 import discordModals from 'discord-modals';
 import express from 'express';
 import { getFiles } from './utils/file.js';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config({path: `.env.${process.env.NODE_ENV}`})
 
 const app = express();
 const port = 3000;

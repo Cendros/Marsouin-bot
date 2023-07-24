@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_ENV=development node ./app/deployment/deploy-dev.js",
-    "start": "NODE_ENV=development node ./app",
-    "docker": "docker rm marsouin-bot & docker rmi marsouin-bot & docker build -t marsouin-bot . && docker run --name marsouin-bot --rm marsouin-bot"
+    "deploy-dev": "NODE_ENV=development node ./app/deployment/deploy-dev.js",
+    "dev": "NODE_ENV=development node ./app",
+    "docker": "NODE_ENV=production docker rm marsouin-bot & docker rmi marsouin-bot & docker build -t marsouin-bot . && docker run --name marsouin-bot --rm marsouin-bot"
   },
   "author": "Cendros",
   "license": "ISC",
